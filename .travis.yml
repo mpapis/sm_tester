@@ -1,0 +1,18 @@
+language: ruby
+rvm:
+  - 1.9.3
+before_script:
+  - sudo apt-get install zsh
+  - curl -L get.smf.sf | sh
+  - export PATH=$PATH:$HOME/.sm/bin/:$HOME/.sm/pkg/active/bin:$HOME/.sm/pkg/active/sbin
+install: gem install tf
+script: find shell -name '*_comment_test.sh' | xargs tf --text
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#rvm-test"
+  email:
+    recipients:
+      - mpapis@gmail.com
+    on_failure: change
+

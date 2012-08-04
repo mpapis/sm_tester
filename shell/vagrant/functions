@@ -1,0 +1,49 @@
+#!/usr/bin/env zsh
+
+# generate_vm_config <box_name> <box_url> <target> [param=value ...]
+# generate_vm_config \
+#   ubuntu_1204_64_precise \
+#   http://files.vagrantup.com/precise64.box \
+#   /path/to/Vagrantfile \
+#   memory=4096 \
+#   cpus=4 \
+#   nictype1=Am79C973
+generate_vm_config()
+{
+  typeset name url target param value
+  name="$1"
+  url="$2"
+  target="$3"
+  shift 3 || {
+    log warn "Usage: $0 <box_name> <box_url> <target> [param=value ...]"
+    return 1
+  }
+
+  {
+    printf "%b" "
+Vagrant::Config.run do |config|
+  config.vm.box     = \"${name}\"
+  config.vm.box_url = \"${url}\"
+"
+
+    if (( $# ))
+    then
+      printf "%b" "
+  config.vm.customize [
+    \"modifyvm\", :id,
+"
+      while (( $# ))
+      do
+        param="${1%%\=*}"
+        value="${1#*=}"
+        shift
+        printf "%b\n" "    \"--${param}\", \"${value}\","
+        [[ "${param}" != "cpus" ]] ||
+          printf "%b\n" "    \"--ioapic\", \"on\","
+      done
+      printf "%b" "  ]\n"
+    fi
+
+    printf "%b\n" "end"
+  } > "${target}"
+}

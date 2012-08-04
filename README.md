@@ -1,4 +1,4 @@
-# SMF Extension for testing
+# SMF Extension for testing with Vagrant
 
 Allow running the same tests in multiple virtual machines.
 

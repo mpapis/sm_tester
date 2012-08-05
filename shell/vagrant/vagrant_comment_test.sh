@@ -1,7 +1,6 @@
 #!/usr/bin/env zsh
 
-eval $(sm test ext)
-includes sm_tester/vagrant
+eval $(sm test ext sm_tester/vagrant)
 
 mkdir -p "${sm_temp_path}/sm_tester/"
 [[ -f "${sm_temp_path}/sm_tester/Vagrantfile" ]] # status!=0
